@@ -28,5 +28,15 @@ namespace AwesomeGym.API.Entidades
 
 		public int IdProfessor { get; set; }
 		public Professor Professor { get; private set; }
+
+		public void MudarStatusParaInativo()
+        {
+			if (Status != StatusAlunoEnum.Ativo)
+            {
+				throw new Exception("Estado inválido");
+            }
+
+			Status = StatusAlunoEnum.Inativo;
+        }
 	}
 }

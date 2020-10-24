@@ -21,7 +21,9 @@ namespace AwesomeGym.API.Controllers
 		[HttpGet]
 		public IActionResult Get()
 		{
-            var alunos = _awesomeGymDbContext.Alunos.ToList();
+            var alunos = _awesomeGymDbContext
+				.Alunos
+				.ToList();
 
 			return Ok(alunos);
 		}
@@ -53,15 +55,33 @@ namespace AwesomeGym.API.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public IActionResult Put(int id)
+		public IActionResult Put(int id, [FromBody] Aluno aluno)
 		{
-			return Ok();
+			if (!_awesomeGymDbContext.Alunos.Any(a => a.Id == id))
+            {
+				return NotFound();
+            }
+
+			_awesomeGymDbContext.Alunos.Update(aluno);
+			_awesomeGymDbContext.SaveChanges();
+
+			return NoContent();
 		}
 
 		[HttpDelete("{id}")]
 		public IActionResult Delete(int id)
 		{
-			return Ok();
+			var aluno = _awesomeGymDbContext.Alunos.SingleOrDefault(aluno => aluno.Id == id);
+
+			if (aluno == null)
+            {
+				return NotFound();
+            }
+
+			aluno.MudarStatusParaInativo();
+			_awesomeGymDbContext.SaveChanges();
+
+			return NoContent();
 		}
 	}
 }
